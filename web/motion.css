@@ -1,0 +1,80 @@
+/* ============================================================
+   Motion — the M3 Expressive springs, brought to the One UI build.
+   Only timing changes here: no colour, no shape, no layout. The
+   look stays exactly as it was; it just moves the way the
+   expressive build does.
+   ============================================================ */
+
+:root{
+  --spring: cubic-bezier(.34,1.7,.64,1);
+  --spring-soft: cubic-bezier(.2,.9,.3,1.06);
+  --ease: cubic-bezier(.2,.8,.2,1);
+}
+
+.card, .sumcard, .kpi, .setcard, .qaddbtn, .morebtn, .aicard, .nwcard,
+.btn, .chip, .segb, .iconbtn, .accentdot, .switch, .qkey, .qcat, .qtype button,
+.lrow, .recrow, .goalcard, .walletrow, .txrow, .barow, .pickrow, .navbtn, .fabopt, .tlitem{
+  transition:
+    transform .3s var(--spring),
+    box-shadow .3s var(--ease),
+    background .24s var(--ease),
+    color .24s var(--ease),
+    border-color .24s var(--ease),
+    opacity .2s var(--ease);
+}
+
+.card:active, .sumcard:active, .qaddbtn:active, .setcard:active{ transform: scale(.982) }
+.btn:active, .chip:active, .segb:active, .iconbtn:active, .accentdot:active{ transform: scale(.95) }
+.qkey:active, .qcat:active{ transform: scale(.94) }
+.navbtn:active{ transform: scale(.94) }
+.lrow:active, .recrow:active, .goalcard:active, .walletrow:active, .txrow:active{ transform: scale(.988) }
+.fabopt:active{ transform: scale(.94) }
+
+.sheetcard{ animation: mSpringUp .46s var(--spring) both }
+@keyframes mSpringUp{
+  from{ transform: translateY(64px) scale(.96); opacity:.2 }
+  to{ transform: none; opacity: 1 }
+}
+#sheet{ transition: opacity .26s var(--ease) }
+
+#navbar .navbtn, #navbar .navbtn .nic{
+  transition: transform .3s var(--spring), background .24s var(--ease), color .24s var(--ease), box-shadow .3s var(--ease);
+}
+#appbar{ transition: opacity .24s var(--ease), transform .34s var(--spring) }
+#fab{ transition: transform .34s var(--spring), box-shadow .3s var(--ease), background .24s var(--ease) }
+#fab svg{ transition: transform .34s var(--spring) }
+#fab:active{ transform: scale(.9) }
+.fabstack{ transition: opacity .24s var(--ease), transform .34s var(--spring) }
+.fabstack.open{ transform: none }
+#navbar{ transition: transform .4s var(--spring), opacity .26s var(--ease), box-shadow .3s var(--ease), background .24s var(--ease) }
+
+.toast{ animation: mPop .34s var(--spring) both }
+@keyframes mPop{
+  from{ opacity: 0; transform: translateY(10px) scale(.96) }
+  to{ opacity: 1; transform: none }
+}
+.nudecard, .updcard, .synccard, .offlinechip{ animation: mSettle .38s var(--spring) both }
+@keyframes mSettle{
+  from{ opacity: 0; transform: translateY(12px) scale(.99) }
+  to{ opacity: 1; transform: none }
+}
+
+.lc-line:not(.dash){ animation-duration: 1.25s; animation-timing-function: var(--ease) }
+.lc-fill{ animation-duration: 1s; animation-timing-function: var(--ease) }
+.chartbar, .dowbar span, .heatcellv{ animation-duration: .62s; animation-timing-function: var(--spring-soft) }
+.catbarfill, .hbarfill{ animation-duration: .66s; animation-timing-function: var(--spring-soft) }
+
+.spinner{ animation: spin .9s var(--ease) infinite }
+
+body.reducemotion *,
+body.reducemotion *::before,
+body.reducemotion *::after{
+  animation: none !important;
+  transition: none !important;
+}
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation: none !important;
+    transition: none !important;
+  }
+}

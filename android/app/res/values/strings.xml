@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GitHub Tracker</string>
+    <string name="widget_updates_desc">Latest commits, releases and new repos across the accounts you track</string>
+    <string name="widget_releases_desc">Latest releases with their APK and source files</string>
+    <string name="widget_contrib_desc">Contribution graph and streak for your personal account</string>
+    <string name="widget_commits_desc">Latest commits across the accounts you track</string>
+</resources>

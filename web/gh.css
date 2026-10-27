@@ -1,0 +1,337 @@
+/* ============================================================
+   GitHub Tracker — polish layer (loaded last)
+   Fixes the sheet spacing glitch, adds the release cards and
+   smooths the motion. Colours/shapes still come from the One UI
+   design system above; nothing here changes the palette.
+   ============================================================ */
+
+/* ---------- bottom sheet: real padding, scrolls, no clipping ---------- */
+#sheet { background: rgba(0,0,0,.46); }
+body.dark #sheet, body.pitch #sheet { background: rgba(0,0,0,.64); }
+
+.sheetcard {
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  max-height: 88vh;
+  overflow: hidden;
+  border-radius: 34px 34px 0 0;
+  box-shadow: 0 -18px 60px rgba(0,0,0,.26);
+}
+body.dark .sheetcard, body.pitch .sheetcard { box-shadow: 0 -18px 60px rgba(0,0,0,.72); }
+
+.sheetgrab {
+  width: 40px; height: 4px; border-radius: 2px;
+  background: var(--divider); margin: 10px auto 0; flex: 0 0 auto;
+}
+/* the tracker layer pulls the header out by -14px; with padding:0 that
+   pushed the title past the screen edge — pin it back inside instead */
+.sheethead {
+  margin: 0 !important;
+  padding: 8px 20px 10px !important;
+  position: relative !important;
+  background: var(--card);
+}
+.sheethead b { font-size: 16px; letter-spacing: -.2px; }
+.sheetbody {
+  padding: 4px 20px calc(22px + env(safe-area-inset-bottom,0px)) !important;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.sheetbody .btncol { margin-top: 18px; }
+.sheetbody .fld { margin-top: 2px; }
+
+/* ---------- page transition ---------- */
+#view.swap { animation: ghView .34s var(--spring) both; }
+@keyframes ghView { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+/* ---------- event icons: readable in the dark themes ---------- */
+body.dark .eicon.push, body.pitch .eicon.push { background: rgba(58,130,255,.20); color: #79A9FF; }
+body.dark .eicon.tag, body.pitch .eicon.tag { background: rgba(255,182,46,.18); color: #FFC65C; }
+.eicon.asset { background: rgba(46,160,67,.14); color: var(--ok); }
+.eicon.asset.src { background: rgba(130,80,223,.14); color: var(--purple); }
+body.dark .eicon.asset, body.pitch .eicon.asset { background: rgba(46,160,67,.18); color: #4CC35E; }
+body.dark .eicon.asset.src, body.pitch .eicon.asset.src { background: rgba(160,120,255,.18); color: #B69BFF; }
+
+/* ---------- release cards ---------- */
+.relcard { padding: 18px 18px 10px; }
+.relhead { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.rtag { font-size: 17px; font-weight: 700; letter-spacing: -.2px; word-break: break-all; line-height: 1.3; }
+.rrepo { font-size: 12.5px; color: var(--text2); margin-top: 4px; word-break: break-all; }
+.relnote { font-size: 13px; color: var(--text2); margin-top: 9px; line-height: 1.55;
+           display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.assetlist { margin-top: 12px; border-top: 1px solid var(--divider); }
+.assetrow { display: flex; align-items: center; gap: 12px; padding: 11px 2px;
+            border-bottom: 1px solid var(--divider); transition: background .2s var(--ease); }
+.assetrow:last-child { border-bottom: none; }
+.assetrow:active { background: var(--chip); }
+.assetrow .ltitle { font-size: 13.5px; }
+.assetrow .lsub { font-size: 11.5px; margin-top: 2px; }
+.achip { font-size: 10.5px; font-weight: 700; letter-spacing: .4px; padding: 4px 9px;
+         border-radius: 10px; background: var(--chip); color: var(--text2); flex-shrink: 0; }
+.achip.apk { background: rgba(46,160,67,.16); color: var(--ok); }
+.achip.src { background: rgba(130,80,223,.16); color: var(--purple); }
+.assetnone { font-size: 12.5px; color: var(--text2); padding: 14px 2px; }
+
+/* ---------- empty states ---------- */
+.emptyic { width: 64px; height: 64px; border-radius: 24px; display: flex; align-items: center;
+           justify-content: center; margin: 0 auto 16px; background: var(--chip); color: var(--text2); }
+.emptyic svg { width: 30px; height: 30px; }
+
+/* ---------- header buttons ---------- */
+#settingsBig {
+  background: rgba(255,255,255,.72);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  backdrop-filter: blur(22px) saturate(1.5);
+  border: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 6px 22px rgba(0,0,0,.14);
+}
+body.dark #settingsBig {
+  background: rgba(26,27,29,.76); border-color: rgba(255,255,255,.07);
+  box-shadow: 0 6px 22px rgba(0,0,0,.45);
+}
+body.pitch #settingsBig {
+  background: rgba(8,8,8,.84); border-color: rgba(255,255,255,.05);
+  box-shadow: 0 6px 22px rgba(0,0,0,.9);
+}
+#pagehead .phrow #bigTitle { margin-right: 2px; }
+
+/* ---------- motion ---------- */
+.lrow { transition: transform .3s var(--spring), background .22s var(--ease), box-shadow .3s var(--ease); }
+.card { transition: transform .3s var(--spring), box-shadow .3s var(--ease), border-color .25s var(--ease); }
+#scroller { scroll-behavior: smooth; }
+.segb { transition: transform .28s var(--spring), background .22s var(--ease), color .22s var(--ease), box-shadow .3s var(--ease); }
+
+/* ---------- list rows: even insets, no dead space on the left ----------
+   The base sheet gave .lrow 22px side padding on top of the card's own 16px,
+   which pushed every icon ~38px in. Lists now own the full card width and
+   the rows carry a single, even 16px inset. */
+.card.list { padding: 6px 0; overflow: hidden; }
+.card.list .lrow { padding: 13px 16px; gap: 13px; }
+.card.list .lrow > .eicon { margin-left: 0; }
+
+/* ---------- the unread dot must not push the icon inward ----------
+   .ndot is visibility:hidden but still 9px wide, and it sits before the icon
+   with the row's 13px gap — that was ~22px of dead space on every row. It is
+   now an absolute marker at the row's edge, so the icon always starts at the
+   same 16px no matter the read state. */
+.card.list .lrow { position: relative; }
+.card.list .lrow .ndot {
+  position: absolute; left: 5px; top: 50%; margin: 0; transform: translateY(-50%);
+  width: 5px; height: 5px; box-shadow: none;
+}
+
+/* ---------- in-app widgets ---------- */
+.widgetcard { padding: 16px 16px 12px; }
+.wghead { display: flex; align-items: center; gap: 11px; margin-bottom: 10px; }
+.wgicon { width: 34px; height: 34px; border-radius: 12px; display: flex; align-items: center;
+          justify-content: center; background: var(--chip); color: var(--accent); flex-shrink: 0; }
+.wgicon svg { width: 17px; height: 17px; }
+.wgtitle { font-size: 15px; font-weight: 700; letter-spacing: -.2px; }
+.wgsub { font-size: 11.5px; color: var(--text2); margin-top: 1px;
+         white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wgbtn { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center;
+         justify-content: center; background: var(--chip); color: var(--accent); flex-shrink: 0;
+         transition: transform .3s var(--spring), background .2s var(--ease); }
+.wgbtn svg { width: 16px; height: 16px; }
+.wgbtn:active { transform: scale(.9); background: var(--accent); color: var(--accentText, #fff); }
+.wgbtn.spin svg { animation: spin .9s linear infinite; }
+.wglist { display: flex; flex-direction: column; }
+.wgrow { display: flex; align-items: center; gap: 11px; padding: 9px 0;
+         border-bottom: 1px solid var(--divider); }
+.wgrow:last-child { border-bottom: none; }
+.wgrow .eicon { width: 30px; height: 30px; }
+.wgrow .eicon svg { width: 15px; height: 15px; }
+.wgrow .ltitle { font-size: 13.5px; }
+.wgrow .lsub { font-size: 11.5px; margin-top: 1px; }
+.wgempty { font-size: 12.5px; color: var(--text2); padding: 10px 0 4px; line-height: 1.5; }
+.heatmini { gap: 2px; padding: 4px 0 0; }
+.heatmini .heatcell { width: 7px; height: 7px; border-radius: 1.5px; }
+.heatmini .heatcol { gap: 2px; }
+
+/* ---------- custom accent ---------- */
+.colorrow { margin-top: 14px; }
+.colorrow input[type=color] { cursor: pointer; }
+
+/* ---------- download affordance on release files ---------- */
+.assetrow { cursor: pointer; }
+.dlbtn {
+  width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; color: var(--accent); background: var(--chip);
+  flex-shrink: 0; transition: background .2s var(--ease), color .2s var(--ease), transform .3s var(--spring);
+}
+.dlbtn svg { width: 15px; height: 15px; }
+.assetrow:active .dlbtn { background: var(--accent); color: var(--accentText, #fff); transform: scale(.92); }
+
+/* ---------- five nav items: keep the pill tidy ---------- */
+#navbar .navbtn { padding: 6px 3px 4px; }
+#navbar .navbtn .nic { padding: 5px 10px; }
+#navbar .navbtn .nic svg { width: 21px; height: 21px; }
+#navbar .nlbl { font-size: 9.8px; letter-spacing: .1px; }
+
+/* ---------- personal dashboard ---------- */
+.heatwrap { gap: 3px; padding: 8px 0 4px; -webkit-overflow-scrolling: touch; }
+.heatcell { width: 9px; height: 9px; border-radius: 2px; }
+.heatlegend { display: flex; align-items: center; gap: 4px; margin-top: 10px;
+              font-size: 11px; color: var(--text2); }
+.heatlegend .heatcell { display: inline-block; }
+.heatlegend span:first-child { margin-right: 2px; }
+.heatlegend span:last-child { margin-left: 2px; }
+.streakrow { display: flex; gap: 8px; margin-top: 16px; }
+.streak { flex: 1; background: var(--chip); border-radius: 18px; padding: 12px 6px; text-align: center; }
+.streak b { display: block; font-size: 19px; letter-spacing: -.4px; }
+.streak span { font-size: 11px; color: var(--text2); font-weight: 600; }
+.statgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.statbox { background: var(--card); border-radius: 22px; padding: 16px 14px; }
+.statbox b { display: block; font-size: 22px; letter-spacing: -.6px; }
+.statbox span { font-size: 11.5px; color: var(--text2); font-weight: 600; }
+body.dark .statbox, body.pitch .statbox { border: 1px solid var(--divider); }
+
+/* ---------- notification toggle row ---------- */
+.notifyrow { display: flex; align-items: center; gap: 12px; padding: 4px 2px; }
+.notifyrow .lmain { flex: 1; min-width: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  #view.swap { animation: none; }
+  #scroller { scroll-behavior: auto; }
+}
+body.reducemotion #view.swap { animation: none; }
+
+/* =====================================================================
+   ANIMATIONS — copied from the Gitly source (app.css), selectors adapted
+   ===================================================================== */
+
+/* ---- "new" arrival: a refresh keeps the list on screen and animates only
+        the rows that are genuinely new (slide in, brief tint, left bar) ---- */
+@keyframes newIn  { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+@keyframes newTint{ 0%, 26% { background: var(--glow); } 100% { background: transparent; } }
+@keyframes newBar { 0% { opacity: 0; } 18% { opacity: 1; } 100% { opacity: 0; } }
+
+.lrow.new-in,
+.card.list .lrow.new-in {
+  position: relative;
+  animation: newIn .55s cubic-bezier(.2, .8, .25, 1) both,
+             newTint 2.4s ease-out both;
+  animation-delay: 0s !important;
+}
+.lrow.new-in::before,
+.card.list .lrow.new-in::before {
+  content: '';
+  position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px;
+  border-radius: 3px; background: var(--accent);
+  animation: newBar 2.4s ease-out both;
+}
+html[data-glow="off"] .lrow.new-in,
+html[data-glow="off"] .card.list .lrow.new-in {
+  animation: newIn .55s cubic-bezier(.2, .8, .25, 1) both;
+}
+
+/* ---- sliding insert: new rows are pushed in at the top and slide down over
+        the rows already on screen instead of the list being redrawn ---- */
+@keyframes slideTop {
+  from { opacity: 0; transform: translateY(-100%); }
+  to   { opacity: 1; transform: none; }
+}
+.card.list .lrow.slide-top,
+.lrow.slide-top {
+  animation: slideTop .5s cubic-bezier(.2, .8, .25, 1) both;
+  animation-delay: 0s !important;
+}
+.card.list.slide-anim { overflow: hidden; }
+
+/* refresh never repaints the page: new rows are slid in at the top instead */
+#view > .settled{ animation:none !important }
+.card.list .lrow.settled:not(.new-in):not(.slide-top){ animation:none !important }
+
+/* feed icons for the new event kinds */
+.eicon.repo{background:rgba(46,160,67,.14);color:var(--ok)}
+.eicon.account{background:var(--chip);color:var(--text2)}
+body.dark .eicon.repo,body.pitch .eicon.repo{background:rgba(46,160,67,.18);color:#4CC35E}
+
+/* ---------- tappable stat tiles + analysis bars ---------- */
+button.qstat{appearance:none;-webkit-appearance:none;font:inherit;color:inherit;border:none;cursor:pointer;
+  transition:transform .25s var(--spring), background .2s var(--ease)}
+button.qstat:active{transform:scale(.96)}
+.sumcard.tap{cursor:pointer;transition:transform .25s var(--spring), box-shadow .25s var(--ease)}
+.sumcard.tap:active{transform:scale(.985);box-shadow:0 0 26px var(--glow)}
+.hourbars .daybar span{max-width:14px}
+.hourbars .daybar i{font-size:8.5px;min-height:11px}
+.hourbars{gap:2px}
+
+/* stat boxes are tappable */
+button.statbox{appearance:none;-webkit-appearance:none;font:inherit;color:inherit;border:none;text-align:left;
+  cursor:pointer;transition:transform .25s var(--spring), background .2s var(--ease)}
+button.statbox:active{transform:scale(.97)}
+body.dark button.statbox, body.pitch button.statbox{border:1px solid var(--divider)}
+
+/* ---------- in-app commit view ---------- */
+.cmsg{font-size:16.5px;font-weight:700;line-height:1.35;letter-spacing:-.2px;word-break:break-word}
+.cmeta{font-size:12.5px;color:var(--text2);margin-top:6px;word-break:break-all}
+.dfcard{padding:14px 16px;cursor:pointer}
+.dfhead{display:flex;align-items:center;gap:10px}
+.dpath{font-size:13px;font-weight:650;word-break:break-all;flex:1;min-width:0;
+       font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.dfstat{font-size:12px;color:var(--text2);flex-shrink:0;font-variant-numeric:tabular-nums}
+.dwrap{margin-top:12px;border-radius:14px;overflow:hidden;background:var(--seg)}
+.dhunk{font-size:10.5px;color:var(--text2);padding:7px 10px;background:var(--chip);
+       font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;word-break:break-all}
+.dpre{margin:0;padding:8px 10px;font-size:11px;line-height:1.5;overflow-x:auto;
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre}
+.dpre span{display:block;padding:0 2px}
+.dadd{color:#4CC35E;background:rgba(46,160,67,.10)}
+.ddel{color:#FF6B6B;background:rgba(255,80,80,.10)}
+.dctx{color:var(--text2)}
+.relnotes{font-size:13.5px;line-height:1.6;color:var(--text2);white-space:pre-wrap;word-break:break-word}
+
+/* ---------- toast: themed, not a white slab ---------- */
+body.dark .toast, body.pitch .toast {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--divider);
+  box-shadow: 0 10px 30px rgba(0,0,0,.6), 0 0 18px var(--glow2);
+}
+body.dark .toast::before, body.pitch .toast::before {
+  content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent); margin-right: 9px; vertical-align: middle;
+}
+.toast { letter-spacing: .1px; }
+
+/* ---------- offline strip ---------- */
+.offlinebar {
+  display: flex; align-items: center; gap: 8px; margin: 0 2px 12px;
+  padding: 9px 14px; border-radius: 16px; font-size: 12.5px; font-weight: 600;
+  background: var(--chip); color: var(--text2); border: 1px solid var(--divider);
+}
+.offlinebar i { width: 7px; height: 7px; border-radius: 50%; background: #F59E0B; flex-shrink: 0; }
+
+/* profile stats / streaks / languages / heat cells are all tappable */
+button.pstat{appearance:none;-webkit-appearance:none;font:inherit;color:inherit;border:none;
+  flex:1;cursor:pointer;transition:transform .25s var(--spring), background .2s var(--ease)}
+button.pstat:active{transform:scale(.95);background:var(--chip)}
+button.streak{appearance:none;-webkit-appearance:none;font:inherit;color:inherit;border:none;cursor:pointer;
+  transition:transform .25s var(--spring)}
+button.streak:active{transform:scale(.96)}
+button.lgd{appearance:none;-webkit-appearance:none;font:inherit;color:inherit;border:none;background:none;
+  cursor:pointer;padding:3px 5px;border-radius:9px;transition:background .2s var(--ease)}
+button.lgd:active{background:var(--chip)}
+.heatcell{cursor:pointer}
+.heatcell:active{transform:scale(.85)}
+
+/* retry link inside an asset error */
+.retrylink{background:none;border:none;font:inherit;color:var(--accent);font-weight:700;cursor:pointer;padding:0 2px}
+
+/* ---------- credits page (layout copied from Gitly) ---------- */
+.creditslist{list-style:none;text-align:left;margin:16px auto 0;padding:0;max-width:290px}
+.creditslist li{font-size:13px;color:var(--text2);padding:8px 0 8px 18px;position:relative;
+  border-bottom:1px solid var(--divider);line-height:1.45}
+.creditslist li:last-child{border-bottom:none}
+.creditslist li::before{content:'';position:absolute;left:0;top:15px;width:6px;height:6px;
+  border-radius:50%;background:var(--accent)}
+.devav{width:96px;height:96px;border-radius:32px;margin:0 auto 16px;display:block;object-fit:cover;
+  box-shadow:0 8px 28px var(--glow)}
+.devrow{padding:9px 0;border-bottom:1px solid var(--divider)}
+.devrow .ltitle{font-size:13px}
+.devrow .lsub{margin-top:2px}
+.connectbtn{display:flex;align-items:center;justify-content:flex-start;gap:12px}
+.connectbtn svg{width:18px;height:18px;flex-shrink:0}
